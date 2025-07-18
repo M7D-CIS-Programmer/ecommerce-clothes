@@ -1,97 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="utf-8">
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
-    
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login - ElegantFit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-image: url('{{ asset('assets/img/hotel/showcase-3.webp') }}');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-
-<body>
-    <div class="container-fluid position-relative d-flex p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+<body class="min-h-screen flex items-center justify-center bg-black bg-opacity-60">
+    <div class="w-full max-w-md bg-white bg-opacity-90 rounded-2xl shadow-lg p-8">
+        <div class="text-center mb-6">
+            <img src="{{ asset('assets/img/hotel/logo.jpg') }}" alt="Luxury Hotel Logo" class="w-20 mx-auto mb-2">
+            <h2 class="text-2xl font-bold text-yellow-700">login</h2>
+            <p class="text-sm text-gray-600">welcome to Luxury Hotel</p>
         </div>
-        <!-- Spinner End -->
 
-        <!-- Sign In Start -->
-        <div class="container-fluid">
-            <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
-                <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-                    <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a href="{{ route('login') }}" class="">
-                                <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkPan</h3>
-                            </a>
-                            <h3>Sign In</h3>
-                        </div>
-                        <form action="{{ route('login') }}" method="POST">
-                            @csrf
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com" required>
-                                <label for="floatingInput">Email address</label>
-                            </div>
-                            <div class="form-floating mb-4">
-                                <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
-                                <label for="floatingPassword">Password</label>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="remember" id="exampleCheck1">
-                                    <label class="form-check-label" for="exampleCheck1">Remember me</label>
-                                </div>
-                                <a href="{{ route('password.request') }}">Forgot Password</a>
-                            </div>
-                            <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
-                            <p class="text-center mb-0">Don't have an Account? <a href="{{ route('register') }}">Sign Up</a></p>
-                        </form>
-                    </div>
-                </div>
+        @if (session('status'))
+            <div class="mb-4 text-sm text-green-600">
+                {{ session('status') }}
             </div>
-        </div>
-        <!-- Sign In End -->
+        @endif
+
+        <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            @csrf
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input id="email" type="email" name="email" required autofocus
+                       class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-yellow-600 focus:ring-yellow-600">
+                @error('email')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">password</label>
+                <input id="password" type="password" name="password" required
+                       class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-yellow-600 focus:ring-yellow-600">
+                @error('password')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="flex items-center justify-between">
+                <label class="flex items-center">
+                    <input type="checkbox" name="remember" class="rounded text-yellow-600">
+                    <span class="ml-2 text-sm text-gray-600">remember me</span>
+                </label>
+                <a href="{{ route('password.request') }}" class="text-sm text-yellow-700 hover:underline">forget my password ?</a>
+            </div>
+
+            <div>
+                <button type="submit"
+                        class="w-full bg-yellow-700 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded-xl transition duration-300">
+                    login
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-gray-700">
+            you don't have an account? 
+            <a href="{{ route('register') }}" class="text-yellow-700 hover:underline"> create new account</a>
+        </p>
     </div>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/chart/chart.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="js/mains.js"></script>
 </body>
-
 </html>

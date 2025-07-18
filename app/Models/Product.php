@@ -6,16 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    public function sections() {
-        return $this->belongsTo(Section::class,'section_id');
+    public function sections()
+    {
+        return $this->belongsTo(Section::class, 'section_id');
     }
     protected $table = 'products';
-    
-    protected $fillable = [
-        'name', 'description', 'price', 'section_id', 'img'
-    ];    
 
-    public function shoppingCart() {
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'section_id',
+        'img'
+    ];
+
+    public function shoppingCart()
+    {
         return $this->hasMany(ShoppingCart::class);
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
 }

@@ -48,10 +48,6 @@
               <a href="{{ route('product.index') }}">Shop</a>
             </li>
 
-            <li class="label1" data-label1="hot">
-              <a href="{{ route('Cart.index') }}">Features</a>
-            </li>
-
             <li>
               <a href="blog">Blog</a>
             </li>
@@ -72,11 +68,11 @@
             <i class="zmdi zmdi-search"></i>
           </div>
 
-          <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
-            <i class="zmdi zmdi-shopping-cart"></i>
+          <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="2">
+            <a href="shopping-cart"><i class="zmdi zmdi-shopping-cart"></i></a>
           </div>
 
-          <a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+          <a href="{{ route('favorites.index') }}" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
             <i class="zmdi zmdi-favorite-outline"></i>
           </a>
         </div>
@@ -157,9 +153,6 @@
         <a href="{{ route('product.index') }}">Shop</a>
       </li>
 
-      <li>
-        <a href="{{ route('Cart.index') }}" class="label1 rs1" data-label1="hot">Features</a>
-      </li>
 
       <li>
         <a href="blog">Blog</a>

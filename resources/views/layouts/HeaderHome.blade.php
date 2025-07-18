@@ -21,10 +21,6 @@
 								<a href="{{ route('product.index') }}">Shop</a>
 							</li>
 
-							<li class="label1" data-label1="hot">
-								<a href="{{ route('Cart.index') }}">Features</a>
-							</li>
-
 							<li>
 								<a href="blog.html">Blog</a>
 							</li>
@@ -58,9 +54,11 @@
 					<div class="wrap-icon-header flex-w flex-r-m h-full">
 						<!-- أيقونة السلة -->
 						<div class="flex-c-m h-full p-r-25 bor6">
-								<div class="icon-header-item cl0 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="2">
+								<a href="shopping-cart"> 
+									<div class="icon-header-item cl0 hov-cl1 trans-04 p-lr-11 icon-header-noti" data-notify="2">
 										<i class="zmdi zmdi-shopping-cart"></i>
 								</div>
+								</a>
 						</div>
 				
 						<!-- أيقونة الملف الشخصي -->
@@ -121,10 +119,6 @@
 
 				<li>
 					<a href="{{ route('product.index') }}">Shop</a>
-				</li>
-
-				<li>
-					<a href="{{ route('Cart.index') }}" class="label1 rs1" data-label1="hot">Features</a>
 				</li>
 
 				<li>

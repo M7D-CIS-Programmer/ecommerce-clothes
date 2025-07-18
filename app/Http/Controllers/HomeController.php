@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -23,21 +22,36 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-
-    public function index (){
-        $products = DB::table('products')->get();
-        $sections = DB::table('sections')->get();
-        return view('pages.home', compact('products','sections'));
-    }
-
-    const FOLDER = "pages";
-    public function testing($id)
+    public function index()
     {
-        $viewPage = self::FOLDER . '.' . $id;
-        if (view()->exists($viewPage))
-            return view($viewPage);
-        else
-            return view('404');
+        $sections = DB::table('sections')->get();
+        $products = DB::table('products')->get();
+        return view('pages.home', compact('sections', 'products'));
     }
 
+    // const PAGES = 'pages';
+    public function testing($page = null)
+    {
+        if ($page) {
+            return view('pages.' . $page);
+        } else {
+            return view('404');
+        }
+    }
+
+    public function contact(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+            'msg' => 'required|string|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', '❌ Please fill in all fields correctly.');
+        }
+        return redirect()->back()->with('success', ' ✅ Your message has been sent successfully! Your inquiry will be answered via your email.');
+    }
 }

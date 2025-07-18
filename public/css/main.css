@@ -2070,6 +2070,9 @@ input.num-product::-webkit-inner-spin-button {
 
 .btn-addwish-b2 .icon-heart2 {
   opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .btn-addwish-b2:hover .icon-heart2 {
@@ -2087,6 +2090,7 @@ input.num-product::-webkit-inner-spin-button {
 .js-addedwish-b2 .icon-heart1 {
   opacity: 0;
 }
+
 
 /*---------------------------------------------*/
 .label-new {
@@ -3411,3 +3415,74 @@ a {
 .rs1-select2 select:hover {
     background-color: #e0e0e0; /* تغيير الخلفية عند التمرير */
 }
+
+
+
+
+/* Alert for delete confirmation */
+/* This will create a fixed alert box that appears when an item is deleted */
+.alert-delete {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+    animation: fadeInOut 4s ease-in-out forwards;
+    font-weight: bold;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+
+.delete-container {
+    position: relative;
+    display: inline-block;
+}
+
+.delete-btn {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.product-img {
+    width: 100%;
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+.delete-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.delete-container:hover .delete-icon {
+    opacity: 1;
+}
+.delete-container:hover .product-img {
+    opacity: 0.3; /* Reduce opacity of the product image on hover */
+}
+
+
+
+
+

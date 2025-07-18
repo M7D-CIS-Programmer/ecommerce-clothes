@@ -15,7 +15,7 @@ class CartController extends Controller
     public function index()
     {
         $total = 0;
-        $cart = DB::table('shopping_cart')->get();
+        $cart = DB::table('shopping_cart')->where('user_id', Auth::user()->id)->get();
         $products = $cart->map(function ($item) {
             return Product::find($item->product_id);
         });
@@ -64,13 +64,13 @@ class CartController extends Controller
 
     public function destroy($id)
     {
-        $cartItem = ShoppingCart::find($id);
-
-        dd($cartItem);
-        if ($cartItem) {
-            $cartItem->delete();
+       $DProduct = ShoppingCart::where('product_id',$id)->where('user_id', Auth::user()->id)->first();
+        if ($DProduct) {
+            $DProduct->delete();
+            session()->flash('Deleted', 'تم حذف المنتج بنجاح!');
+        } else {
+            session()->flash('Error', 'المنتج غير موجود في السلة!');
         }
-
         return redirect()->back();
     }
 
@@ -99,6 +99,7 @@ class CartController extends Controller
             'color' => $request->input('color'),
             'product_id' => $productId,
             'quantity' => $request->input('quantity'),
+            'user_id' => Auth::user()->id,
             'total' => Product::find($productId)->price * $request->input('quantity')
         ]);
     }
