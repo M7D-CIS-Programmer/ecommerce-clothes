@@ -43,6 +43,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/contact', [HomeController::class, 'contact'])->name('contact.send');
     Route::get('/favorite/toggle/{id}', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
     Route::get('/favorite/destroy/{id}', [FavoriteController::class, 'destroy'])->name('favorite.destroy');
+    Route::get('section-products/{id}', [ProductController::class, 'getSectionProducts'])->name('section.products');
+    Route::get('blog', [HomeController::class, 'getBlog'])->name('blog');
+    Route::get('contact', [HomeController::class, 'getContact'])->name('contact');
+    Route::get('about', [HomeController::class, 'getAbout'])->name('about');
+    Route::get('cart', [HomeController::class, 'getCart'])->name('cart');
+
+
     Route::get('/{page?}', [HomeController::class, 'testing'])->name('home.testing');
 });
 

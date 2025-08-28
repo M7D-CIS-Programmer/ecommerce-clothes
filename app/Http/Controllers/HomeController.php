@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class HomeController extends Controller
 {
@@ -29,13 +30,12 @@ class HomeController extends Controller
         return view('pages.home', compact('sections', 'products'));
     }
 
-    // const PAGES = 'pages';
     public function testing($page = null)
     {
-        if ($page) {
+        if (\View()->exists('pages.' . $page)) {
             return view('pages.' . $page);
         } else {
-            return view('404');
+            return view('404'); // Return a 404 view if the page does not exist
         }
     }
 
@@ -54,4 +54,25 @@ class HomeController extends Controller
         }
         return redirect()->back()->with('success', ' ✅ Your message has been sent successfully! Your inquiry will be answered via your email.');
     }
+
+    public function getBlog()
+    {
+        return view('pages.blog');
+    }
+
+    public function getContact()
+    {
+        return view('pages.contact');
+    }
+
+    public function getAbout()
+    {
+        return view('pages.about');
+    }
+
+    public function getCart()
+    {
+        return view('pages.shopping-cart');
+    }
+
 }

@@ -120,19 +120,17 @@
                     <div class="col-md-6 col-lg-7 p-b-30">
                         <div class="p-l-25 p-r-30 p-lr-0-lg">
                             <div class="wrap-slick3 flex-sb flex-w">
-                                <div class="wrap-slick3-dots"></div>
+                                {{-- <div class="wrap-slick3-dots"></div> --}}
                                 <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
                                 <div class="slick3 gallery-lb">
 
-                                    @foreach ($details as $detail)
-                                        <div class="item-slick3" data-thumb="{{ asset($detail->img) }}">
+                                        <div class="item-slick3" data-thumb="#">
                                             <div class="wrap-pic-w pos-relative">
                                                 <img src="{{ asset($product->img) }}" alt="IMG-PRODUCT">
-
+                                                
                                             </div>
                                         </div>
-                                    @endforeach
-
+\
 
 
 
@@ -447,42 +445,55 @@
             <div class="wrap-slick2">
                 <div class="slick2">
 
-                    @foreach ($SectionProduct as $SP)
+                    @foreach ($SectionProduct as $item)
                         <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
                             <!-- Block2 -->
-                            <div class="block2">
-                                <div class="block2-pic hov-img0">
-                                    <img src="{{ asset($SP->img) }}" alt="IMG-PRODUCT"
-                                        style="max-height: 200px !important;min-height:250px !important">
+                            <!-- Block2 -->
+						<div class="block2">
+							<div class="block2-pic hov-img0">
+								<img src="{{ asset($item->img) }}" alt="IMG-PRODUCT"
+									style="max-height: 200px !important;min-height:250px !important">
 
-                                    <a href="{{ route('product.detail', $SP->id) }}"
-                                        class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
-                                        Quick View
-                                    </a>
-                                </div>
+								<a href="#"
+									class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+									data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-price="{{ $item->price }}"
+									data-description="{{ $item->description }}" data-img="{{ asset($item->img) }}">
+									Quick View
+								</a>
+							</div>
 
-                                <div class="block2-txt flex-w flex-t p-t-14">
-                                    <div class="block2-txt-child1 flex-col-l ">
-                                        <a href="{{ route('product.detail', $SP->id) }}"
-                                            class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                                            {{ $SP->name }}
-                                        </a>
+							<div class="block2-txt flex-w flex-t p-t-14">
+								<div class="block2-txt-child1 flex-col-l ">
+									<a href="{{ route('product.detail', $item->id) }}"
+										class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+										{{ $item->name }}
+									</a>
 
-                                        <span class="stext-105 cl3">
-                                            ${{ $SP->price }}
-                                        </span>
-                                    </div>
+									<span class="stext-105 cl3">
+										${{ $item->price }}
+									</span>
+								</div>
 
-                                    <div class="block2-txt-child2 flex-r p-t-3">
-                                        <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                            <img class="icon-heart1 dis-block trans-04"
-                                                src="{{ asset('images/icons/icon-heart-01.png') }}" alt="ICON">
-                                            <img class="icon-heart2 dis-block trans-04 ab-t-l"
-                                                src="{{ asset('images/icons/icon-heart-02.png') }}" alt="ICON">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+								<div class="block2-txt-child2 flex-r p-t-3">
+									@php
+										$isFavorite = Auth::check() && Auth::user()->favorites->contains('product_id', $item->id);
+									@endphp
+
+									<a href="{{ route('favorite.toggle', $item->id) }}" data-id="{{ $item->id }}"
+										class="btn-addwish-b2 dis-block pos-relative {{ $isFavorite ? 'js-addedwish-b2' : '' }}">
+										<img class="icon-heart1 dis-block trans-04"
+											src="{{ asset('images/icons/icon-heart-01.png') }}" alt="ICON">
+
+										<img class="icon-heart2 dis-block trans-04 ab-t-l"
+											src="{{ asset('images/icons/icon-heart-02.png') }}" alt="ICON">
+									</a>
+
+
+								</div>
+
+
+							</div>
+						</div>
                         </div>
                     @endforeach
 

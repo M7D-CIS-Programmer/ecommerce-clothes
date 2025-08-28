@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('check_outs', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('country');
-            $table->string('address');
-            $table->string('phone');
+            $table->foreignId('user_id');
+            $table->decimal('total', 10, 2)->default(0);
+            $table->string('status')->default('pending'); // e.g., pending, completed
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('check_outs');
+        Schema::dropIfExists('orders');
     }
 };

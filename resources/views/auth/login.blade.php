@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login - ElegantFit</title>
+    <title>login - CozaStore</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-image: url('{{ asset('assets/img/hotel/showcase-3.webp') }}');
+            background-image: url('images/background.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -18,9 +18,9 @@
 <body class="min-h-screen flex items-center justify-center bg-black bg-opacity-60">
     <div class="w-full max-w-md bg-white bg-opacity-90 rounded-2xl shadow-lg p-8">
         <div class="text-center mb-6">
-            <img src="{{ asset('assets/img/hotel/logo.jpg') }}" alt="Luxury Hotel Logo" class="w-20 mx-auto mb-2">
+            <img src="{{ asset('images/logo.jpg') }}" alt="CozaStore Logo" class="w-20 mx-auto mb-2">
             <h2 class="text-2xl font-bold text-yellow-700">login</h2>
-            <p class="text-sm text-gray-600">welcome to Luxury Hotel</p>
+            <p class="text-sm text-gray-600">Welcome To CozaStore</p>
         </div>
 
         @if (session('status'))
@@ -55,7 +55,7 @@
                     <input type="checkbox" name="remember" class="rounded text-yellow-600">
                     <span class="ml-2 text-sm text-gray-600">remember me</span>
                 </label>
-                <a href="{{ route('password.request') }}" class="text-sm text-yellow-700 hover:underline">forget my password ?</a>
+                {{-- <a href="{{ route('password.request') }}" class="text-sm text-yellow-700 hover:underline">forget my password ?</a> --}}
             </div>
 
             <div>

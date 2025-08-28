@@ -51,6 +51,12 @@ class ProductController extends Controller
         return view('pages.product-detail', compact('product', 'details', 'SectionProduct', 'products', 'sections'));
     }
 
+
+    public function getSectionProducts($id)
+    {
+        $products = DB::table('products')->where('section_id', $id)->get();
+        return redirect()->route('product.index', $id)->with('products', $products);
+    }
     // public function addToCart($id = null,Request $request) {
     //     ShoppingCart::create([
     //         'size'       => $request->size,

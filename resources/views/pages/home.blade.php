@@ -73,7 +73,7 @@
 					</li>
 
 					<li class="p-b-13">
-						<a href="#" class="stext-102 cl2 hov-cl1 trans-04">
+						<a href="{{ route('favorites.index') }}" class="stext-102 cl2 hov-cl1 trans-04">
 							My Wishlist
 						</a>
 					</li>
@@ -103,6 +103,7 @@
 							Help & FAQs
 						</a>
 					</li>
+
 					<li class="p-b-13">
 
 						<form method="POST" action="{{ route('logout') }}">

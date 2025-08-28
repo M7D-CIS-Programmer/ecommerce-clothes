@@ -1,9 +1,13 @@
+@php
+  use App\Models\ShoppingCart; // Assuming you have a ShoppingCart model
+  use App\Models\Favorite; // Assuming you have a Favorites model
+@endphp
 <!-- Header -->
 <header class="header-v4">
   <!-- Header desktop -->
   <div class="container-menu-desktop">
     <!-- Topbar -->
-    <div class="top-bar">
+    {{-- <div class="top-bar">
       <div class="content-topbar flex-sb-m h-full container">
         <div class="left-top-bar">
           Free shipping for standard order over $100
@@ -27,17 +31,17 @@
           </a>
         </div>
       </div>
-    </div>
+    </div> --}}
 
     <div class="wrap-menu-desktop how-shadow1">
       <nav class="limiter-menu-desktop container">
-        
-        <!-- Logo desktop -->		
-        <a href="#" class="logo">
-          <img src="{{ asset('images/icons/logo-01.png') }}" alt="IMG-LOGO">
+
+        <!-- Logo desktop -->
+        <a href="{{route('home')}}" class="logo">
+          <img src="{{ asset('images/icons/logo-02.png') }}" alt="IMG-LOGO">
         </a>
 
-        <!-- Menu desktop -->
+          <!-- Menu desktop -->
         <div class="menu-desktop">
           <ul class="main-menu">
             <li>
@@ -49,40 +53,63 @@
             </li>
 
             <li>
-              <a href="blog">Blog</a>
+              <a href="{{route('blog')}}">Blog</a>
             </li>
 
             <li>
-              <a href="about">About</a>
+              <a href="{{ route('about') }}">About</a>
             </li>
 
             <li>
-              <a href="contact">Contact</a>
+              <a href="{{route('contact')}}">Contact</a>
             </li>
           </ul>
-        </div>	
+        </div>
 
         <!-- Icon header -->
         <div class="wrap-icon-header flex-w flex-r-m">
-          <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+          {{-- <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
             <i class="zmdi zmdi-search"></i>
+          </div> --}}
+
+
+        @php
+          $id_user = Auth::id();
+          if (ShoppingCart::where('user_id', $id_user)->count() > 0) {
+          $cartCount = ShoppingCart::where('user_id',$id_user)->count();
+          } else {
+           $cartCount = 0;
+          }
+        @endphp
+
+          <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+            data-notify="{{ $cartCount }}">
+            <a href="{{route('Cart.index')}}"><i class="zmdi zmdi-shopping-cart"></i></a>
           </div>
 
-          <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="2">
-            <a href="shopping-cart"><i class="zmdi zmdi-shopping-cart"></i></a>
-          </div>
+          @php
+            $id_user = Auth::id();
 
-          <a href="{{ route('favorites.index') }}" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+            if (Favorite::where('user_id', $id_user)->count() > 0) {
+            $favoritesCount = Favorite::where('user_id', $id_user)->count();
+            } else {
+                $favoritesCount = 0;
+            } 
+          @endphp
+
+          <a href="{{ route('favorites.index') }}"
+            class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+            data-notify="{{ $favoritesCount }}">
             <i class="zmdi zmdi-favorite-outline"></i>
           </a>
         </div>
       </nav>
-    </div>	
+    </div>
   </div>
 
   <!-- Header Mobile -->
   <div class="wrap-header-mobile">
-    <!-- Logo moblie -->		
+    <!-- Logo moblie -->
     <div class="logo-mobile">
       <a href="{{ route('home') }}"><img src="{{ asset('images/icons/logo-01.png') }}" alt="IMG-LOGO"></a>
     </div>
@@ -93,11 +120,12 @@
         <i class="zmdi zmdi-search"></i>
       </div>
 
-      <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
+      <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="{{ $cartCount }}">
         <i class="zmdi zmdi-shopping-cart"></i>
       </div>
 
-      <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="0">
+      <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+        data-notify="{{ $favoritesCount }}">
         <i class="zmdi zmdi-favorite-outline"></i>
       </a>
     </div>
