@@ -9,6 +9,8 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
+
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -48,8 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('contact', [HomeController::class, 'getContact'])->name('contact');
     Route::get('about', [HomeController::class, 'getAbout'])->name('about');
     Route::get('cart', [HomeController::class, 'getCart'])->name('cart');
-
-
+    Route::post('review', [ReviewController::class, 'review'])->name('review');
+    Route::delete('delete/review/{id}',[ReviewController::class,'deleteReview'])->name('reviews.destroy');
     Route::get('/{page?}', [HomeController::class, 'testing'])->name('home.testing');
 });
 

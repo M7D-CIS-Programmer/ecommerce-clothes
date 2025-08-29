@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('check_outs', function (Blueprint $table) {
-            $table->foreignId('cartId')->constrained('shopping_cart')->cascadeOnDelete();
-            $table->foreignId('userId')->constrained('users')->cascadeOnDelete();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('profile_image')->nullable();
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('check_outs', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
         });
     }

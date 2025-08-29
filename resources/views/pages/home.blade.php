@@ -48,7 +48,9 @@
 
 <body class="animsition">
 
-
+	@php
+		use App\Models\Product;
+	@endphp
 
 	@include('layouts.HeaderHome')
 
@@ -124,59 +126,23 @@
 					</span>
 
 					<div class="flex-w flex-sb p-t-36 gallery-lb">
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-01.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-01.jpg');"></a>
-						</div>
+						@php
+							$products = Product::all();
+							// $products = Product::take(12)->get();
+						@endphp
 
 						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-02.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-02.jpg');"></a>
-						</div>
+						@foreach ($products->slice(0,12) as $product)
+							<div class="wrap-item-gallery m-b-10">
+								<a class="item-gallery bg-img1" href="{{asset($product->img)}}" data-lightbox="gallery"
+									style="background-image: url({{$product->img}});"></a>
+							</div>
+						@endforeach
 
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-03.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-03.jpg');"></a>
-						</div>
 
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-04.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-04.jpg');"></a>
-						</div>
 
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-05.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-05.jpg');"></a>
-						</div>
 
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-06.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-06.jpg');"></a>
-						</div>
 
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-07.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-07.jpg');"></a>
-						</div>
-
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-08.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-08.jpg');"></a>
-						</div>
-
-						<!-- item gallery sidebar -->
-						<div class="wrap-item-gallery m-b-10">
-							<a class="item-gallery bg-img1" href="images/gallery-09.jpg" data-lightbox="gallery"
-								style="background-image: url('images/gallery-09.jpg');"></a>
-						</div>
 					</div>
 				</div>
 
@@ -389,7 +355,7 @@
 				@foreach ($sections as $item)
 					<div class="col-md-6 p-b-30 m-lr-auto">
 						<div class="block1 wrap-pic-w">
-							<img src="{{ $item->img }}" alt="IMG-BANNER"
+							<img src="{{ asset($item->img) }}" alt="IMG-BANNER" loading="lazy" decoding="async"
 								style="max-height: 200px !important;min-height:400px !important">
 
 							<a href="{{ route('product.index', $item->id) }}"
@@ -468,7 +434,7 @@
 						<!-- Block2 -->
 						<div class="block2">
 							<div class="block2-pic hov-img0">
-								<img src="{{ $item->img }}" alt="IMG-PRODUCT"
+								<img src="{{ asset($item->img) }}" alt="IMG-PRODUCT" loading="lazy" decoding="async"
 									style="max-height: 200px !important;min-height:250px !important">
 
 								<a href="#"

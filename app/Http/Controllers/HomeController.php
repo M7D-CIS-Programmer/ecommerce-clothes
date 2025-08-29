@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\Models\Product;
+use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 
 class HomeController extends Controller
@@ -25,8 +28,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $sections = DB::table('sections')->get();
-        $products = DB::table('products')->get();
+        $sections = Cache::remember('sections.all.v2', 3600, function () {
+            return Section::all(['id', 'name', 'img']);
+        });
+
+        $products = Cache::remember('home.products.latest', 600, function () {
+            return Product::latest('id')->take(24)->get(['id', 'name', 'price', 'img', 'section_id']);
+        });
         return view('pages.home', compact('sections', 'products'));
     }
 

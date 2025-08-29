@@ -7,6 +7,7 @@ use App\Models\Section;
 use App\Models\ShoppingCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -14,17 +15,23 @@ class ProductController extends Controller
     // public static $s = 0;
     public function index($sectionId = null)
     {
-        $count      = 0;
-        $product    = DB::table('products')->where('id', $sectionId)->get();
-        $sections   = DB::table('sections')->get();
-        $details    = DB::table('product_details')->where('pro_id', $sectionId)->get();
+        $count = 0;
 
-        if ($sectionId != null) {
-            $products = DB::table('products')->where('section_id', $sectionId)->get();
+        $sections = Cache::remember('sections.all', 3600, function () {
+            return Section::all(['id', 'name']);
+        });
+
+        $query = Product::query();
+        if ($sectionId !== null) {
+            $query->where('section_id', $sectionId);
             $count++;
-        } else {
-            $products = DB::table('products')->get();
         }
+
+        $products = $query->orderByDesc('id')->paginate(12);
+
+        // Keep these variables for view compatibility
+        $product = Product::where('id', $sectionId)->get();
+        $details = DB::table('product_details')->where('pro_id', $sectionId)->get();
 
         return view('pages.product', compact('products', 'sections', 'count', 'product', 'details'));
     }
@@ -39,13 +46,16 @@ class ProductController extends Controller
 
     public function detail($id)
     {
-        $SecrionOfNumber = DB::table('products')->where('id', $id)->value('section_id');
-        $SectionProduct  = DB::table('products')->where('section_id', $SecrionOfNumber)->get();
+        $productModel = Product::findOrFail($id);
+        $SecrionOfNumber = $productModel->section_id;
+        $SectionProduct  = Product::where('section_id', $SecrionOfNumber)->latest('id')->take(12)->get();
 
-        $products = DB::table('products')->get();
-        $sections = DB::table('sections')->get();
+        $products = Product::latest('id')->take(20)->get();
+        $sections = Cache::remember('sections.all', 3600, function () {
+            return Section::all(['id', 'name']);
+        });
 
-        $product = DB::table('products')->where('id', $id)->get();
+        $product = Product::where('id', $id)->get();
         $details = DB::table('product_details')->where('pro_id', $id)->get();
 
         return view('pages.product-detail', compact('product', 'details', 'SectionProduct', 'products', 'sections'));

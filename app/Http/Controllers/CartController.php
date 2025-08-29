@@ -14,49 +14,61 @@ class CartController extends Controller
 
     public function index()
     {
-        $total = 0;
-        $cart = DB::table('shopping_cart')->where('user_id', Auth::user()->id)->get();
-        $products = $cart->map(function ($item) {
-            return Product::find($item->product_id);
+        $cart = ShoppingCart::with('product')
+            ->where('user_id', Auth::id())
+            ->get();
+
+        $products = $cart->map(function ($cartItem) {
+            return $cartItem->product;
         });
 
-        $quantity = $cart->map(function ($item) {
-            return $item->quantity;
+        $quantity = $cart->map(function ($cartItem) {
+            return $cartItem->quantity;
         });
 
-        // Calculate the total price of single product in table products
-        $TotalOfProduct = $cart->map(function ($item) {
-            return $item->total;
+        $TotalOfProduct = $cart->map(function ($cartItem) {
+            $price = optional($cartItem->product)->price ?? 0;
+            return $price * $cartItem->quantity;
         });
 
-        // Calculate the total price of the all products in the cart
-        foreach ($products as $key => $product) {
-            $total += $product->price * $quantity[$key];
-        }
+        $total = $cart->reduce(function ($carry, $cartItem) {
+            $price = optional($cartItem->product)->price ?? 0;
+            return $carry + ($price * $cartItem->quantity);
+        }, 0);
 
         return view('pages.shopping-cart', compact('cart', 'products', 'quantity', 'total', 'TotalOfProduct'));
     }
 
     public function updateCart(Request $request)
     {
-        $productIds = $request->input('product_id'); // مصفوفة
-        $quantities = $request->input('quantity'); // مصفوفة
+        $validated = $request->validate([
+            'product_id' => 'required|array',
+            'product_id.*' => 'required|integer|exists:products,id',
+            'quantity' => 'required|array',
+            'quantity.*' => 'required|integer|min:1',
+        ]);
 
-        if (!$productIds) {
-            return response()->json(['success' => false, 'message' => 'لم يتم إرسال معرفات المنتجات'], 400);
-        }
+        $productIds = $validated['product_id'];
+        $quantities = $validated['quantity'];
+
+        // Preload product prices to avoid per-item queries
+        $products = Product::whereIn('id', $productIds)->get(['id', 'price'])
+            ->keyBy('id');
 
         foreach ($productIds as $index => $productId) {
-            $cartItem = ShoppingCart::where('product_id', $productId)->first();
+            $cartItem = ShoppingCart::where('product_id', $productId)
+                ->where('user_id', Auth::id())
+                ->first();
 
             if ($cartItem) {
+                $qty = $quantities[$index];
+                $price = optional($products->get($productId))->price ?? 0;
                 $cartItem->update([
-                    'quantity' => $quantities[$index],
-                    'total' => Product::find($productId)->price * $quantities[$index]
+                    'quantity' => $qty,
+                    'total' => $price * $qty,
                 ]);
             }
         }
-
 
         return redirect()->back();
     }
@@ -77,30 +89,37 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        $productId = $request->input('product_id');
+        $validated = $request->validate([
+            'product_id' => 'required|integer|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'size' => 'nullable|string|max:50',
+            'color' => 'nullable|string|max:50',
+        ]);
 
-        if (!$productId) {
-            return response()->json(['success' => false, 'message' => 'لم يتم إرسال معرف المنتج'], 400);
-        }
+        $productId = $validated['product_id'];
+        $qty = $validated['quantity'];
 
-        $cartItem = ShoppingCart::where('product_id', $productId)->first();
+        $product = Product::find($productId);
+        $price = $product ? $product->price : 0;
+
+        $cartItem = ShoppingCart::where('product_id', $productId)
+            ->where('user_id', Auth::id())
+            ->first();
 
         if ($cartItem) {
-            // المنتج موجود، قم بتحديث الكمية
-            $quantity = $cartItem->quantity + $request->input('quantity');
+            $newQty = $cartItem->quantity + $qty;
             $cartItem->update([
-                'quantity' => $quantity,
-                'total' => Product::find($productId)->price * $quantity
+                'quantity' => $newQty,
+                'total' => $price * $newQty,
             ]);
         } else {
-            // المنتج غير موجود، قم بإضافته إلى السلة
             ShoppingCart::create([
                 'size' => $request->input('size'),
                 'color' => $request->input('color'),
                 'product_id' => $productId,
-                'quantity' => $request->input('quantity'),
-                'user_id' => Auth::user()->id,
-                'total' => Product::find($productId)->price * $request->input('quantity')
+                'quantity' => $qty,
+                'user_id' => Auth::id(),
+                'total' => $price * $qty,
             ]);
         }
 
@@ -110,7 +129,9 @@ class CartController extends Controller
 
     public function checkOut()
     {
-        $cart = ShoppingCart::where('user_id', Auth::id())->get();
+        $cart = ShoppingCart::with('product')
+            ->where('user_id', Auth::id())
+            ->get();
 
         if ($cart->isEmpty()) {
             session()->flash('cartEmpty', 'لا توجد منتجات في السلة!');
@@ -118,13 +139,10 @@ class CartController extends Controller
         }
 
         // حساب السعر الإجمالي بناءً على الكمية والسعر
-        $total = 0;
-        foreach ($cart as $item) {
-            // dd($item);
-            $product = Product::find($item->product_id);
-            $total += $product->price * $item->quantity;
-
-        }
+        $total = $cart->reduce(function ($carry, $item) {
+            $price = optional($item->product)->price ?? 0;
+            return $carry + ($price * $item->quantity);
+        }, 0);
 
         DB::beginTransaction();
         try {
@@ -137,15 +155,15 @@ class CartController extends Controller
 
             // إدخال المنتجات ضمن order_items
             foreach ($cart as $item) {
-                $product = Product::find($item->product_id);
+                $price = optional($item->product)->price ?? 0;
 
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'product_id' => $product->id,
+                    'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'size' => $item->size,
                     'color' => $item->color,
-                    'price' => $product->price, // السعر وقت الطلب
+                    'price' => $price,
                 ]);
             }
 
