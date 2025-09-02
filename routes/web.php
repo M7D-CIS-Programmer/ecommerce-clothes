@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('cart', [HomeController::class, 'getCart'])->name('cart');
     Route::post('review', [ReviewController::class, 'review'])->name('review');
     Route::delete('delete/review/{id}',[ReviewController::class,'deleteReview'])->name('reviews.destroy');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::get('/{page?}', [HomeController::class, 'testing'])->name('home.testing');
 });
 

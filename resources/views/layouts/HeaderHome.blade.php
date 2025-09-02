@@ -83,12 +83,76 @@
 					</div> --}}
 
 
+					<!-- صورة البروفايل -->
+					<div class="flex-c-m h-full p-lr-19">
+						<a href="javascript:void(0)" data-toggle="modal" data-target="#profileModal">
+							<img src="{{ asset(optional(Auth::user())->profile_image ?? 'images/user.jpg') }}"
+								alt="Profile Photo" class="rounded-full"
+								style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
+						</a>
+					</div>
+
+					<!-- Modal البروفايل -->
+					<div class="modal fade" id="profileModal" tabindex="-1" role="dialog"
+						aria-labelledby="profileModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content p-4">
+								<div class="modal-header">
+									<h5 class="modal-title" id="profileModalLabel">Profile</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+
+								<div class="modal-body text-center">
+									<!-- صورة -->
+									<img src="{{ asset(optional(Auth::user())->profile_image ?? 'images/default-user.png') }}"
+										alt="Profile" class="rounded-full"
+										style="width:40px; height:40px; object-fit:cover; border-radius:50%;">
+
+
+									<!-- معلومات المستخدم -->
+									<p><strong>Name:</strong> {{ Auth::user()->name }}</p>
+									<p><strong>Email:</strong> {{ Auth::user()->email }}</p>
+
+									<!-- فورم التعديل -->
+									<form action="{{ route('profile.update') }}" method="POST"
+										enctype="multipart/form-data">
+										@csrf
+										@method('PUT')
+
+										<div class="form-group text-left">
+											<label>Edit Name</label>
+											<input type="text" name="name" class="form-control"
+												value="{{ Auth::user()->name }}">
+										</div>
+
+										<div class="form-group text-left">
+											<label>Edit Email</label>
+											<input type="email" name="email" class="form-control"
+												value="{{ Auth::user()->email }}">
+										</div>
+
+										<div class="form-group text-left">
+											<label>Change Photo</label>
+											<input type="file" name="profile_image" class="form-control">
+										</div>
+
+										<button type="submit" class="btn btn-primary btn-block">Save</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
 					<!-- أيقونة المفضلة -->
 					@php
 						$id_user = Auth::id();
 
 						if (Favorite::where('user_id', $id_user)->count() > 0) {
-							$favoritesCount = Favorite::where('user_id',$id_user)->count();
+							$favoritesCount = Favorite::where('user_id', $id_user)->count();
 						} else {
 							$favoritesCount = 0;
 						} 
